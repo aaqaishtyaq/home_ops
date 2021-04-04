@@ -55,6 +55,8 @@ in {
     stateVersion = "21.05";
   };
 
+  programs.zsh.enable = true;
+
   programs.git = {
     enable = true;
     userName = "Aaqa Ishtyaq";
