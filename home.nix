@@ -1,33 +1,63 @@
 { config, pkgs, ... }:
 
-{
+let
+  firstName = "Aaqa";
+  lastName = "Ishtyaq";
+  personalEmail = "aaqaishtyaq@gmail.com";
+
+  # Set OSes
+  isLinux = builtins.currentSystem == "x86_64-linux";
+  isDarwin = builtins.currentSystem == "x86_64-darwin";
+  onCloud = builtins.getEnv "USER" == "ubuntu";
+
+in {
+  imports = [
+    ./modules
+  ];
+
+  nixpkgs.config = { allowUnfree = true; };
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
-  home.packages = [
-    pkgs.vim
-    pkgs.tmux
-    pkgs.htop
-    pkgs.cowsay
-  ];
+
+  home = {
+    username = if isDarwin then
+      "${firstName}${lastName}"
+    else
+      (if onCloud then "ubuntu" else firstName);
+
+    homeDirectory = if isDarwin then
+      "/Users/${firstName}${lastName}"
+    else
+      (if onCloud then "/home/ubuntu" else "/home/${firstName}");
+
+    sessionVariables = {
+      EDITOR = "vim";
+      HISTCONTROL = "ignoreboth";
+      PAGER = "less";
+      LESS = "-iR";
+    };
+
+    packages = with pkgs; [
+      curl
+      diffutils
+      htop
+      jq
+      less
+      lsof
+      rsync
+      shellcheck
+      unzip
+      vim
+      wget
+      zip
+    ];
+
+    stateVersion = "21.05";
+  };
 
   programs.git = {
     enable = true;
     userName = "Aaqa Ishtyaq";
     userEmail = "aaqaishtyaq@gmail.com";
   };
-
-  # Home Manager needs a bit of information about you and the
-  # paths it should manage.
-  home.username = "ubuntu";
-  home.homeDirectory = "/home/ubuntu";
-
-  # This value determines the Home Manager release that your
-  # configuration is compatible with. This helps avoid breakage
-  # when a new Home Manager release introduces backwards
-  # incompatible changes.
-  #
-  # You can update Home Manager without changing this value. See
-  # the Home Manager release notes for a list of state version
-  # changes in each release.
-  home.stateVersion = "21.05";
 }
