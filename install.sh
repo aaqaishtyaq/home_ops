@@ -36,8 +36,8 @@ install_pkg() {
 check_and_install() {
   local pkg="${1}"
 
-  command -v "${pkg}" &>/dev/null && \
-    install_pkg "${pkg}"
+  # command -v "${pkg}" &>/dev/null && \
+  install_pkg "${pkg}"
 }
 
 # TODO:
@@ -46,11 +46,12 @@ check_and_install() {
 clone_repo() {
   local home_ops_repo="aaqaishtyaq/home_ops"
   local config_dir="${HOME}/repos/github.com/${home_ops_repo}"
-  check_and_install git
+  check_and_install git rsync
   printf "Cloning ${home_ops_repo} to ${config_dir}"
   mkdir -p "${config_dir}"
-  git clone git@github.com:aaqaishtyaq/home_ops.git "${config_dir}"
+  git clone https://github.com/aaqaishtyaq/home_ops.git "${config_dir}"
 }
 
 clone_repo
-
+install_nix
+configure_nix
