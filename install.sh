@@ -21,6 +21,11 @@ configure_nix() {
   nix-shell '<home-manager>' -A install
 }
 
+# Install nix experimental feature flakes
+install_flake() {
+  nix-env -iA nixpkgs.nixFlakes
+  echo 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf
+}
 # TODO: Make it platform agnostic
 # param: pkg => string | array[string]
 install_pkg() {
