@@ -24,26 +24,7 @@ configure_nix() {
 # Install nix experimental feature flakes
 install_flake() {
   nix-env -iA nixpkgs.nixFlakes
-  echo 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf
 }
-# TODO: Make it platform agnostic
-# param: pkg => string | array[string]
-# install_pkg() {
-#   local pkg="${*}"
-#   local os_type=$(uname)
-#   if [[ "${os_type}" == "Linux" ]]; then
-#     sudo apt install -y "${pkg}"
-#   elif [[ "${os_type}" == "Darwin" ]]; then
-#     brew install "${pkg}"
-#   fi
-# }
-
-# check_and_install() {
-#   local pkg="${*}"
-
-#   # command -v "${pkg}" &>/dev/null && \
-#   install_pkg "${pkg}"
-# }
 
 # TODO:
 #      1. can i move back home_ops to nix?
