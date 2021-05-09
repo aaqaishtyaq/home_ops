@@ -21,23 +21,9 @@ configure_nix() {
   nix-shell '<home-manager>' -A install
 }
 
-# TODO: Make it platform agnostic
-# param: pkg => string | array[string]
-install_pkg() {
-  local pkg="${1}"
-  local os_type=$(uname)
-  if [[ "${os_type}" == "Linux" ]]; then
-    sudo apt install -y "${pkg}"
-  elif [[ "${os_type}" == "Darwin" ]]; then
-    brew install "${pkg}"
-  fi
-}
-
-check_and_install() {
-  local pkg="${1}"
-
-  command -v "${pkg}" &>/dev/null && \
-    install_pkg "${pkg}"
+# Install nix experimental feature flakes
+install_flake() {
+  nix-env -iA nixpkgs.nixFlakes
 }
 
 # TODO:
@@ -46,11 +32,12 @@ check_and_install() {
 clone_repo() {
   local home_ops_repo="aaqaishtyaq/home_ops"
   local config_dir="${HOME}/repos/github.com/${home_ops_repo}"
-  check_and_install git
+  sudo apt install -y git rsync
   printf "Cloning ${home_ops_repo} to ${config_dir}"
   mkdir -p "${config_dir}"
-  git clone git@github.com:aaqaishtyaq/home_ops.git "${config_dir}"
+  git clone https://github.com/aaqaishtyaq/home_ops.git "${config_dir}"
 }
 
 clone_repo
-
+install_nix
+configure_nix
