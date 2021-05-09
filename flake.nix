@@ -24,6 +24,6 @@
         };
       };
 
-      linux-desktop = self.homeConfigurations.linux-desktop.activationPackage;
+      linux-server = self.homeConfigurations.linux-server.activationPackage;
     };
 }
