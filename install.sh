@@ -29,7 +29,7 @@ install_flake() {
 # TODO: Make it platform agnostic
 # param: pkg => string | array[string]
 install_pkg() {
-  local pkg="${1}"
+  local pkg="${*}"
   local os_type=$(uname)
   if [[ "${os_type}" == "Linux" ]]; then
     sudo apt install -y "${pkg}"
@@ -39,7 +39,7 @@ install_pkg() {
 }
 
 check_and_install() {
-  local pkg="${1}"
+  local pkg="${*}"
 
   # command -v "${pkg}" &>/dev/null && \
   install_pkg "${pkg}"
