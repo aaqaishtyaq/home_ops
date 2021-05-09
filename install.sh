@@ -28,22 +28,22 @@ install_flake() {
 }
 # TODO: Make it platform agnostic
 # param: pkg => string | array[string]
-install_pkg() {
-  local pkg="${*}"
-  local os_type=$(uname)
-  if [[ "${os_type}" == "Linux" ]]; then
-    sudo apt install -y "${pkg}"
-  elif [[ "${os_type}" == "Darwin" ]]; then
-    brew install "${pkg}"
-  fi
-}
+# install_pkg() {
+#   local pkg="${*}"
+#   local os_type=$(uname)
+#   if [[ "${os_type}" == "Linux" ]]; then
+#     sudo apt install -y "${pkg}"
+#   elif [[ "${os_type}" == "Darwin" ]]; then
+#     brew install "${pkg}"
+#   fi
+# }
 
-check_and_install() {
-  local pkg="${*}"
+# check_and_install() {
+#   local pkg="${*}"
 
-  # command -v "${pkg}" &>/dev/null && \
-  install_pkg "${pkg}"
-}
+#   # command -v "${pkg}" &>/dev/null && \
+#   install_pkg "${pkg}"
+# }
 
 # TODO:
 #      1. can i move back home_ops to nix?
@@ -51,7 +51,7 @@ check_and_install() {
 clone_repo() {
   local home_ops_repo="aaqaishtyaq/home_ops"
   local config_dir="${HOME}/repos/github.com/${home_ops_repo}"
-  check_and_install git rsync
+  sudo apt install -y git rsync
   printf "Cloning ${home_ops_repo} to ${config_dir}"
   mkdir -p "${config_dir}"
   git clone https://github.com/aaqaishtyaq/home_ops.git "${config_dir}"
