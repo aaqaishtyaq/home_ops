@@ -1,4 +1,4 @@
-{ ... }: {
+{ config, pkgs, ... }: {
   imports = [
     ./home-manager
     ./neovim
@@ -6,4 +6,8 @@
     ./utils
     ./zsh
   ];
+
+  aaqaishtyaq = {
+    tmux.enable = true;
+  };
 }
