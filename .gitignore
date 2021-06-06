@@ -1,0 +1,4 @@
+# gitignore
+
+result
+.DS_store
