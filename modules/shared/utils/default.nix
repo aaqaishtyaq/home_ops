@@ -13,6 +13,7 @@
     ripgrep
     rsync
     shellcheck
+    skim
     socat
     tmux
     tree
@@ -23,11 +24,23 @@
     zip
   ];
 
-
   programs.direnv = {
     enable = true;
     enableZshIntegration = false;
   };
 
-  programs.fzf.enable = true;
+  programs.fzf = {
+    enable = true;
+    enableZshIntegration = true;
+  };
+
+  programs.go = {
+    enable = true;
+  };
+
+  programs.git = {
+    enable = true;
+    userName = "Aaqa Ishtyaq";
+    userEmail = "aaqaishtyaq@gmail.com";
+  };
 }
