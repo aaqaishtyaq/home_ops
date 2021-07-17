@@ -24,7 +24,8 @@ in {
       resizeAmount = 5;
       escapeTime = 0;
       newSession = true;
-
+      terminal = "xterm-256color";
+      shell = "zsh";
       extraConfig = ''
         # Fix environment variables
         set-option -g update-environment "SSH_AUTH_SOCK \
@@ -32,8 +33,6 @@ in {
                                           DISPLAY"
         # Mouse works as expected
         set-option -g mouse on
-        # Use default shell
-        set-option -g default-shell ''${SHELL}
 
         # default statusbar color
         set-option -g status-style bg=colour237,fg=colour223 # bg=bg1, fg=fg1
@@ -60,6 +59,9 @@ in {
         # pane number display
         set-option -g display-panes-active-colour colour250 #fg2
         set-option -g display-panes-colour colour237 #bg1
+
+        # selection color
+        set-window-option -g mode-style bg=red
 
         # clock
         set-window-option -g clock-mode-colour colour109 #blue

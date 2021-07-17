@@ -40,3 +40,6 @@
   https://serokell.io/blog/practical-nix-flakes
 
 ```
+
+## TODO
+- Have autogenerate bash functions to switch and rebuild the home-manager configurations

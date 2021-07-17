@@ -38,6 +38,15 @@ clone_repo() {
   git clone https://github.com/aaqaishtyaq/home_ops.git "${config_dir}"
 }
 
-clone_repo
-install_nix
-configure_nix
+run() {
+  local step
+  step="$1"
+  if [[ "${step}" == "post" ]]; then
+    configure_nix
+    exec bash
+    install_flake
+  else
+    clone_repo
+    install_nix
+  fi
+}
