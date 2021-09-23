@@ -1,0 +1,45 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: code-server-app
+  labels:
+    app: code-server
+spec:
+  containers:
+  - name: code
+    image: ghcr.io/aaqaishtyaq/openvscode-server:latest
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: code-server-service
+spec:
+  selector:
+    app: code-server
+  ports:
+  # Default port used by the image
+  - port: 5678
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: code-server-ingress
+spec:
+  rules:
+  - http:
+      paths:
+      - pathType: Prefix
+        path: "/foo"
+        backend:
+          service:
+            name: foo-service
+            port:
+              number: 5678
+      - pathType: Prefix
+        path: "/bar"
+        backend:
+          service:
+            name: bar-service
+            port:
+              number: 5678
+---
