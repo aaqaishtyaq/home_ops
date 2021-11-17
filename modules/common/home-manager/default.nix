@@ -27,6 +27,8 @@ in {
       jq
       less
       lsof
+      neofetch
+      ripgrep
       rsync
       shellcheck
       unzip

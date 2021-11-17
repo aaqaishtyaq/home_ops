@@ -15,9 +15,9 @@ configure_nix() {
   echo 'max-jobs = auto' >>~/.config/nix/nix.conf
 
   # install home-manager
-  echo "export NIX_PATH=/nix/var/nix/profiles/per-user/$USER/channels:nixpkgs=/nix/var/nix/profiles/per-user/root/channels/nixpkgs:/nix/var/nix/profiles/per-user/root/channels" | sudo tee -a /etc/profile
   nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
   nix-channel --update
+  export NIX_PATH=$HOME/.nix-defexpr/channels${NIX_PATH:+:}$NIX_PATH
   nix-shell '<home-manager>' -A install
 }
 
@@ -31,22 +31,50 @@ install_flake() {
 #      2. pull aaqaishtyaq/dotfiles repo
 clone_repo() {
   local home_ops_repo="aaqaishtyaq/home_ops"
-  local config_dir="${HOME}/repos/github.com/${home_ops_repo}"
-  sudo apt install -y git rsync
+  local config_dir="${HOME}/projects/src/github.com/${home_ops_repo}"
   printf "Cloning ${home_ops_repo} to ${config_dir}"
   mkdir -p "${config_dir}"
   git clone https://github.com/aaqaishtyaq/home_ops.git "${config_dir}"
 }
 
+# Install required dependency
+install_dependency() {
+  sudo apt update \
+    && sudo apt install -y \
+    git
+    rsync
+}
+
+add_post_hook() {
+  touch /tmp/home_ops.post.lock
+}
+
+remove_post_hook() {
+  rm /tmp/home_ops.post.lock
+}
+
+check_post_repo_lock() {
+  local post
+  post=0
+  if [[ -f /tmp/home_ops.post.lock ]]; then
+    post=1
+  fi
+  printf "$post"
+}
+
 run() {
-  local step
-  step="$1"
-  if [[ "${step}" == "post" ]]; then
+  local post
+  post="$1"
+
+  if [[ "${post}" == 1 ]]; then
     configure_nix
     exec bash
-    install_flake
+    install_flake && remove_post_hook
   else
+    install_dependency
     clone_repo
-    install_nix
+    install_nix && add_post_hook
   fi
 }
+
+run $(check_post_repo_lock)
