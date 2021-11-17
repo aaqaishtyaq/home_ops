@@ -10,11 +10,11 @@ in {
   config = mkIf cfg.enable {
     programs.zsh = {
       enable = true;
-      # dotDir = ".config/zsh.d";
+      dotDir = ".config/zsh.d";
       enableCompletion = true;
       enableAutosuggestions = true;
       history = {
-        path = "~/.zsh_history";
+        path = "$HOME/.config/zsh.d/.zsh_history";
         save = 50000;
         ignoreDups = true;
         share = true;

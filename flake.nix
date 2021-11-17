@@ -40,8 +40,9 @@
               ];
             };
           system = "x86_64-linux";
-          # homeDirectory = "/home/aaqa";
-          # username = "aaqa";
+          homeDirectory = "/home/aaqa";
+          username = "aaqa";
+          stateVersion = "21.05";
         };
       };
 
