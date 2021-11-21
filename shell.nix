@@ -1,9 +1,19 @@
-with import <nixpkgs> {};
+{ pkgs ? import <nixpkgs> { } }:
 
-mkShell {
-  buildInputs = [jq];
+with pkgs;
 
+let
+  nixBin = writeShellScriptBin "nix" ''
+    exec ${nixFlakes}/bin/nix --option experimental-features "nix-command flakes" "$@"
+  '';
+
+in mkShell {
+  buildInputs = [
+    git
+  ];
   shellHook = ''
-    HOME_MANAGER_CONFIG=$PWD/home.nix
+    export FLAKE="$(pwd)"
+    export PATH="$FLAKE/bin:${nixBin}/bin:$PATH"
+    # HOME_MANAGER_CONFIG=$PWD/modules/common/home-manager/default.nix
   '';
 }
