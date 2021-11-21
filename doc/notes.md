@@ -39,7 +39,13 @@
   https://github.com/mrkuz/nixos
   https://serokell.io/blog/practical-nix-flakes
 
+  https://github.com/Slabity/NixConfigs
+
 ```
+
+### NixOS
+https://mgdm.net/weblog/nixos-on-raspberry-pi-4/
+https://nixos.wiki/wiki/NixOS_on_ARM/Raspberry_Pi_4
 
 ## TODO
 - Have autogenerate bash functions to switch and rebuild the home-manager configurations
