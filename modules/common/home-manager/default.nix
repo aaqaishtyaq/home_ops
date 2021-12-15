@@ -47,12 +47,10 @@ in {
     userEmail = "aaqaishtyaq@gmail.com";
   };
 
-  # programs.zsh = {
-  #   enable = true;
-  #   syntaxHighlighting.enable = true;
-  #   interactiveShellInit = ''
-  #     source ${pkgs.grml-zsh-config}/etc/zsh/zshrc
-  #   '';
-  #   promptInit = ""; # otherwise it'll override the grml prompt
-  # };
+  programs.direnv = {
+    enable = true;
+    nix-direnv.enable = true;
+  };
+
+  programs.zoxide.enable = true;
 }

@@ -42,6 +42,7 @@ in {
         ipinfo = "curl ipinfo.io";
         more = "less -R";
         weather = "curl wttr.in";
+        nixclean = "nix-collect-garbage -d";
       };
       sessionVariables = {
         EDITOR = "vim";
@@ -49,12 +50,13 @@ in {
         PAGER = "less";
         LESS = "-iR";
         LANG = "en_US.UTF-8";
-        LC_ALL = "C";
+        LC_ALL = "en_US.UTF-8";
         LC_CTYPE = "en_US";
         LC_MESSAGES="en_US";
       };
       initExtra = ''
         if [ -e $HOME/.nix-profile/etc/profile.d/nix.sh ]; then . $HOME/.nix-profile/etc/profile.d/nix.sh; fi
+        eval "$(direnv hook zsh)"
       '';
     };
   };
