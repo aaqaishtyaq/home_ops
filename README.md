@@ -14,7 +14,7 @@ cd "${HOME}/repos/github.com/aaqaishtyaq/home_ops"
 nix build --experimental-features 'nix-command flakes' '.#linux-server'
 
 # nixos and home-manager
-sudo nixos-rebuild switch --impure --flake '.#pix'
+sudo nixos-rebuild switch --flake '.#pix'
 ```
 
 Note: This is highly experimental

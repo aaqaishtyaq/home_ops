@@ -10,6 +10,12 @@
 
   outputs = { self, nixpkgs, home-manager, ... }@inputs:
     {
+      firstName = "aaqa";
+      onCloud = builtins.getEnv "USER" == "ubuntu";
+
+      username = if onCloud then "ubuntu" else firstName;
+      homeDirectory = if onCloud then "/home/ubuntu" else "/home/${firstName}";
+
       # nixos system configurations
       nixosConfigurations = {
         pix = nixpkgs.lib.nixosSystem {
@@ -40,8 +46,8 @@
               ];
             };
           system = "x86_64-linux";
-          homeDirectory = "/home/aaqa";
-          username = "aaqa";
+          homeDirectory = homeDirectory;
+          username = username;
           stateVersion = "21.05";
         };
       };
