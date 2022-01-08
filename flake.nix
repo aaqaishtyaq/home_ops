@@ -10,12 +10,6 @@
 
   outputs = { self, nixpkgs, home-manager, ... }@inputs:
     {
-      firstName = "aaqa";
-      onCloud = builtins.getEnv "USER" == "ubuntu";
-
-      username = if onCloud then "ubuntu" else firstName;
-      homeDirectory = if onCloud then "/home/ubuntu" else "/home/${firstName}";
-
       # nixos system configurations
       nixosConfigurations = {
         pix = nixpkgs.lib.nixosSystem {
@@ -46,12 +40,26 @@
               ];
             };
           system = "x86_64-linux";
-          homeDirectory = homeDirectory;
-          username = username;
+          homeDirectory = "/home/aaqa";
+          username = "aaqa";
+          stateVersion = "21.05";
+        };
+
+        ubuntu-server = inputs.home-manager.lib.homeManagerConfiguration {
+          configuration = { pkgs, ... }:
+            {
+              imports = [
+                ./modules/common
+              ];
+            };
+          system = "x86_64-linux";
+          homeDirectory = "/home/ubuntu";
+          username = "ubuntu";
           stateVersion = "21.05";
         };
       };
 
       linux-server = self.homeConfigurations.linux-server.activationPackage;
+      ubuntu-server = self.homeConfigurations.ubuntu-server.activationPackage;
     };
 }
