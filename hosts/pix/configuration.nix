@@ -83,6 +83,9 @@ in {
   # Enable touchpad support (enabled default in most desktopManager).
   # services.xserver.libinput.enable = true;
 
+  virtualisation.docker.enable = true;
+  virtualisation.lxd.enable = true;
+
   users = {
     defaultUserShell = pkgs.zsh;
     mutableUsers = false;
@@ -164,9 +167,6 @@ in {
   boot.loader.raspberryPi.firmwareConfig = ''
     dtparam=audio=on
   '';
-
-  virtualisation.docker.enable = true;
-  virtualisation.lxd.enable = true;
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
