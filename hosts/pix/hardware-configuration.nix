@@ -8,7 +8,7 @@
     [ (modulesPath + "/installer/scan/not-detected.nix")
     ];
 
-  boot.initrd.availableKernelModules = [ "xhci_pci" "usbhid" ];
+  boot.initrd.availableKernelModules = [ "xhci_pci" "usbhid" "usb_storage" ];
   boot.initrd.kernelModules = [ ];
   boot.kernelModules = [ ];
   boot.extraModulePackages = [ ];
@@ -18,9 +18,19 @@
       fsType = "ext4";
     };
 
-  fileSystems."/mnt" =
-    { device = "/dev/disk/by-uuid/2178-694E";
-      fsType = "vfat";
+  fileSystems."/media/aaqa/sandisk" =
+    { device = "/dev/disk/by-uuid/71E9-FAA4";
+      fsType = "exfat";
+    };
+
+  fileSystems."/var/lib/lxd/shmounts" =
+    { device = "tmpfs";
+      fsType = "tmpfs";
+    };
+
+  fileSystems."/var/lib/lxd/devlxd" =
+    { device = "tmpfs";
+      fsType = "tmpfs";
     };
 
   swapDevices = [ ];

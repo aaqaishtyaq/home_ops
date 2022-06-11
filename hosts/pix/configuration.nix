@@ -88,7 +88,7 @@ in {
     mutableUsers = false;
     users."${user}" = {
       isNormalUser = true;
-      extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
+      extraGroups = [ "wheel" "docker" "lxd" ]; # Enable ‘sudo’ for the user.
       home = "/home/${user}";
       description = "Aaqa Ishtyaq";
       password = password;
@@ -101,8 +101,9 @@ in {
   environment.systemPackages = with pkgs; [
     vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
     wget
-    # firefox
+    firefox
     neofetch
+    docker-compose
   ];
 
   # programs.zsh = {
@@ -163,6 +164,9 @@ in {
   boot.loader.raspberryPi.firmwareConfig = ''
     dtparam=audio=on
   '';
+
+  virtualisation.docker.enable = true;
+  virtualisation.lxd.enable = true;
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions

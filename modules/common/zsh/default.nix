@@ -43,6 +43,7 @@ in {
         more = "less -R";
         weather = "curl wttr.in";
         nixclean = "nix-collect-garbage -d";
+        mnt-drive = "udisksctl mount -b /dev/sda1";
       };
       sessionVariables = {
         EDITOR = "vim";
@@ -58,6 +59,12 @@ in {
         if [ -e $HOME/.nix-profile/etc/profile.d/nix.sh ]; then . $HOME/.nix-profile/etc/profile.d/nix.sh; fi
         eval "$(direnv hook zsh)"
       '';
+      plugins = [
+        {
+          name = "zsh-completions";
+          src = "${pkgs.zsh-completions}/share/zsh/site-functions";
+        }
+      ];
     };
   };
 }
