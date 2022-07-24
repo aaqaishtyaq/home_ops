@@ -12,6 +12,7 @@ let
   SSID = secrets.SSID;
   SSIDpassword = secrets.SSIDpassword;
   password = secrets.password;
+  tailscaleAuthKey = secrets.tsAuthKey;
   pi4 = fetchTarball {url=https://github.com/NixOS/nixos-hardware/archive/936e4649098d6a5e0762058cb7687be1b2d90550.tar.gz;sha256="06g0061xm48i5w7gz5sm5x5ps6cnipqv1m483f8i9mmhlz77hvlw";};
 in {
   imports =
@@ -107,6 +108,9 @@ in {
     firefox
     neofetch
     docker-compose
+
+    # network
+    tailscale
   ];
 
   # programs.zsh = {
@@ -167,6 +171,51 @@ in {
   boot.loader.raspberryPi.firmwareConfig = ''
     dtparam=audio=on
   '';
+
+  # enable the tailscale service
+  services.tailscale.enable = true;
+
+  systemd.services.tailscale-autoconnect = {
+    description = "Automatic connection to Tailscale";
+
+    # make sure tailscale is running before trying to connect to tailscale
+    after = [ "network-pre.target" "tailscale.service" ];
+    wants = [ "network-pre.target" "tailscale.service" ];
+    wantedBy = [ "multi-user.target" ];
+
+    # set this service as a oneshot job
+    serviceConfig.Type = "oneshot";
+
+    # have the job run this shell script
+    script = with pkgs; ''
+      # wait for tailscaled to settle
+      sleep 2
+
+      # check if we are already authenticated to tailscale
+      status="$(${tailscale}/bin/tailscale status -json | ${jq}/bin/jq -r .BackendState)"
+      if [ $status = "Running" ]; then # if so, then do nothing
+        exit 0
+      fi
+
+      # otherwise authenticate with tailscale
+      ${tailscale}/bin/tailscale up -authkey ${tailscaleAuthKey}
+    '';
+  };
+
+ networking.firewall = {
+    # enable the firewall
+    enable = true;
+
+    # always allow traffic from your Tailscale network
+    trustedInterfaces = [ "tailscale0" ];
+
+    # allow the Tailscale UDP port through the firewall
+    allowedUDPPorts = [ config.services.tailscale.port ];
+
+    # allow you to SSH in over the public internet
+    allowedTCPPorts = [ 22 ];
+  };
+
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
