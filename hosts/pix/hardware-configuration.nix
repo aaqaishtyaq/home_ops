@@ -21,6 +21,7 @@
   fileSystems."/media/aaqa/sandisk" =
     { device = "/dev/disk/by-uuid/71E9-FAA4";
       fsType = "exfat";
+      options = [ "uid=1001" "gid=100" "dmask=007" "fmask=117" ];
     };
 
   fileSystems."/var/lib/lxd/shmounts" =
