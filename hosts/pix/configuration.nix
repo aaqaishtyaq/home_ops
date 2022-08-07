@@ -96,7 +96,7 @@ in {
       home = "/home/${user}";
       description = "Aaqa Ishtyaq";
       password = password;
-      openssh.authorizedKeys.keys = [ "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC/8WD1TXx6EitWjXg8o8kfGXllS5OBovtxinMqWox4jH0bBvzO0r2cEMslxGL+zvQP0ruQeqTq5TFiRNuo4XeGb8NoJhCBmELKVQBXepgW0Kp3PtAoXCiYytidUVloZffbhLV+6mMdPpnNqiWfHRrmf1n+Kf64xpiobInKIDv3OGoe/HvvQSAX4hgiOmj76n7fGmDFQco0C++BVNVoMAQmHwGxC8lW2RFhjeTxjHSwxQdsupaEJ0IXjEmzx823zzK7fB4eNYVaDGttuKnmTzPmH8vzwkpoMSKaZ+X8rzMYrzODnyJPWtdhro9ab/VAiwps/6Qv5te1oYD9+Eu5q3VJlvgBtQmQJB14X4HdcUSlAwkQms/qxfOj5DDfSIkKT9eTAdhraDgkPnkiEkEZxogtOucoqFBeGqsEsQ+hpcB07YWq5JbgH9PjrT/POAZH2Bugr1oR/ra+5MjpF69aYqtIbZtH3VsQW1SXNEJWiGbIDPp988AqU2tGCUTeZVJLhkLpnrlUYn3vqsvwUO/9ZNBQsylQ1hfTU4EfmcIZEOQL1CYIV1mk5iiTNwO8/wVk+bd9uHoVgDMYZiWtwboR7sLdCUsxd/Mbo4O+PxnHpJsH1ehuv8ArKZbsTAE+ARciJ/Z0TgG1h2WaYpgSpu7Wb6oVdoGr5mNOm7rwwuNTgEYNxQ== aaqaishtyaq@gmail.com" ];
+      openssh.authorizedKeys.keys = [ "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGYZjYRGgzYBn6PhTnn4LmQ/AsF5E7RVe10zYYsVQz/w aaqaishtyaq@gmail.com" ];
     };
   };
 
@@ -202,6 +202,39 @@ in {
     '';
   };
 
+  services.samba-wsdd.enable = true; # make shares visible for windows 10 clients
+
+  services.samba = {
+    enable = true;
+    securityType = "user";
+
+    shares = {
+      public = {
+        path = "/media/aaqa/sandisk/Downloads/Public";
+        browseable = "yes";
+        "read only" = "no";
+        "guest ok" = "yes";
+        "create mask" = "0644";
+        "directory mask" = "0755";
+        "force user" = "aaqa";
+        "force group" = "users";
+        "valid users" = "aaqa";
+      };
+
+      private = {
+        path = "/media/aaqa/sandisk/Downloads/Private";
+        browseable = "yes";
+        "read only" = "no";
+        "guest ok" = "no";
+        "create mask" = "0644";
+        "directory mask" = "0755";
+        "force user" = "aaqa";
+        "force group" = "users";
+        "valid users" = "aaqa";
+      };
+    };
+  };
+
  networking.firewall = {
     # enable the firewall
     enable = true;
@@ -210,19 +243,49 @@ in {
     trustedInterfaces = [ "tailscale0" ];
 
     # allow the Tailscale UDP port through the firewall
-    allowedUDPPorts = [ config.services.tailscale.port ];
+    allowedUDPPorts = [
+      config.services.tailscale.port
+      137
+      138
+    ];
 
     # allow you to SSH in over the public internet
-    allowedTCPPorts = [ 22 ];
+    allowedTCPPorts = [
+      22
+      445
+      139
+      5357
+    ];
   };
 
-
-  # This value determines the NixOS release from which the default
-  # settings for stateful data, like file locations and database versions
-  # on your system were taken. It‘s perfectly fine and recommended to leave
-  # this value at the release version of the first install of this system.
-  # Before changing this value read the documentation for this option
-  # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
+  # mDNS
+  #
+  # This makes connecting from a local Mac possible.
+  services.avahi = {
+    enable = true;
+    nssmdns = true;
+    publish = {
+      enable = true;
+      addresses = true;
+      domain = true;
+      hinfo = true;
+      userServices = true;
+      workstation = true;
+    };
+    extraServiceFiles = {
+      smb = ''
+        <?xml version="1.0" standalone='no'?><!--*-nxml-*-->
+        <!DOCTYPE service-group SYSTEM "avahi-service.dtd">
+        <service-group>
+          <name replace-wildcards="yes">%h</name>
+          <service>
+            <type>_smb._tcp</type>
+            <port>445</port>
+          </service>
+        </service-group>
+      '';
+    };
+  };
   system.stateVersion = "21.05"; # Did you read the comment?
 }
 
