@@ -9,7 +9,7 @@
   ];
 
   aaqaishtyaq = {
-    starship.enable = true;
+    starship.enable = false;
     tmux.enable = true;
     zsh.enable = true;
   };
