@@ -31,6 +31,25 @@
         };
       };
 
+      nixosConfigurations = {
+        altair = nixpkgs.lib.nixosSystem {
+          system = "aarch64-linux";
+          specialArgs = { inherit inputs; };
+          modules = [
+            ./hosts/altair
+            home-manager.nixosModules.home-manager {
+              home-manager.useGlobalPkgs = true;
+              home-manager.useUserPackages = true;
+                home-manager.users.aaqa = {
+                imports = [
+                  ./modules/common/default.nix
+                ];
+              };
+            }
+          ];
+        };
+      };
+
       homeConfigurations = {
         linux-server = inputs.home-manager.lib.homeManagerConfiguration {
           configuration = { pkgs, ... }:
@@ -42,7 +61,7 @@
           system = "x86_64-linux";
           homeDirectory = "/home/aaqa";
           username = "aaqa";
-          stateVersion = "21.05";
+          stateVersion = "22.11";
         };
 
         ubuntu-server = inputs.home-manager.lib.homeManagerConfiguration {
@@ -55,7 +74,7 @@
           system = "x86_64-linux";
           homeDirectory = "/home/ubuntu";
           username = "ubuntu";
-          stateVersion = "21.05";
+          stateVersion = "22.11";
         };
       };
 
