@@ -38,7 +38,7 @@ in {
     ];
 
     extraOutputsToInstall = [ "man" ];
-    stateVersion = "21.05";
+    stateVersion = "22.11";
   };
 
   programs.git = {
