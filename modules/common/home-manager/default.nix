@@ -35,6 +35,7 @@ in {
       vim
       wget
       zip
+      iay
     ];
 
     extraOutputsToInstall = [ "man" ];
