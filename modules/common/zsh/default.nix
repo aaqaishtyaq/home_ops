@@ -54,11 +54,17 @@ in {
         LC_ALL = "en_US.UTF-8";
         LC_CTYPE = "en_US";
         LC_MESSAGES="en_US";
+        IAY_CWD_HOME_COLOR="magenta";
+        IAY_CWD_ROOT_COLOR="magenta";
       };
       initExtra = ''
         if [ -e $HOME/.nix-profile/etc/profile.d/nix.sh ]; then . $HOME/.nix-profile/etc/profile.d/nix.sh; fi
         eval "$(direnv hook zsh)"
-        PROMPT='%B%F{green}%m%f%b:%B%F{blue}%~%f%b %# '
+        autoload -Uz add-zsh-hook
+        _iay_prompt() {
+          PROMPT="$(iay -zm)"
+        }
+        add-zsh-hook precmd _iay_prompt
       '';
       plugins = [
         {
