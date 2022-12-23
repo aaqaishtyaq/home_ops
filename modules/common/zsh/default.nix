@@ -2,7 +2,9 @@
 
 with lib;
 
-let cfg = config.aaqaishtyaq.zsh;
+let
+  cfg = config.aaqaishtyaq.zsh;
+  dotDir = ".config/zsh.d";
 in {
   options.aaqaishtyaq.zsh = {
     enable = mkEnableOption "Enable the Z Shell";
@@ -10,11 +12,11 @@ in {
   config = mkIf cfg.enable {
     programs.zsh = {
       enable = true;
-      dotDir = ".config/zsh.d";
+      dotDir = "${dotDir}";
       enableCompletion = true;
       enableAutosuggestions = true;
       history = {
-        path = "$HOME/.config/zsh.d/.zsh_history";
+        path = "$HOME/${dotDir}/.zsh_history";
         save = 50000;
         ignoreDups = true;
         share = true;
@@ -60,18 +62,38 @@ in {
       initExtra = ''
         if [ -e $HOME/.nix-profile/etc/profile.d/nix.sh ]; then . $HOME/.nix-profile/etc/profile.d/nix.sh; fi
         eval "$(direnv hook zsh)"
-        autoload -Uz add-zsh-hook
-        _iay_prompt() {
-          PROMPT="$(iay -zm)"
-        }
-        add-zsh-hook precmd _iay_prompt
+        ZSH_AUTOSUGGEST_USE_ASYNC=true
+
+        for file in "$HOME/${dotDir}/"*.zsh; do
+          if [[ -r "$file" ]] && [[ -f "$file" ]]; then
+            source "$file"
+          fi
+        done
+
+        if command -v grep &>/dev/null; then
+          if [ -r ~/.config/dircolors/dircolors ]; then
+            eval "$(dircolors -b ~/.config/dircolors/dircolors)"
+          else
+            eval "$(dircolors -b)"
+          fi
+        fi
+
+        if [ ! "$TERM" = dumb ]; then
+          autoload -Uz add-zsh-hook
+          _iay_prompt() {
+            PROMPT="$(iay -zm)"
+          }
+          add-zsh-hook precmd _iay_prompt
+        fi
       '';
-      plugins = [
-        {
-          name = "zsh-completions";
-          src = "${pkgs.zsh-completions}/share/zsh/site-functions";
-        }
-      ];
+    };
+
+    home.file = {
+      ".config/zsh.d/completion.zsh".source = ./completion.zsh;
+      ".config/zsh.d/bindings.zsh".source = ./bindings.zsh;
+      ".config/zsh.d/functions.zsh".source = ./functions.zsh;
+      ".config/zsh.d/options.zsh".source = ./options.zsh;
+      ".config/dircolors/dircolors".source = ../dircolors/dircolors;
     };
   };
 }
